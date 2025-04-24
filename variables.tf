@@ -1,7 +1,7 @@
 variable "aws_region" {
     description = "the region where resources will get deployed."
     type = string
-    default = "us-west-2"
+    default = "eu-west-2"
     
 }
 
@@ -14,6 +14,7 @@ variable "public_subnet_cidrs" {
   type = list(string)
   default = [ "10.0.1.0/24", "10.0.2.0/24" ]
 }
+
 
 variable "private_subnet_cidrs" {
   description = "cidr block for private subnet"
@@ -37,4 +38,20 @@ variable "instance_type" {
 
 variable "ami" {
   default = "ami-0023ec6977f2601fd"
+}
+
+variable "ec2-bastion-public-key-path" {
+  type = string
+}
+
+variable "ec2-bastion-private-key-path" {
+  type = string
+}
+
+variable "frontend-public-key-path" {
+  type = string
+}
+
+variable "frontend-private-key-path" {
+  type = string
 }

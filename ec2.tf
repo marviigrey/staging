@@ -1,5 +1,6 @@
   resource "aws_instance" "backend" {
   ami                    = data.aws_ami.ubuntu.id
+  key_name = aws_key_pair.ec2-bastion-host-key.key_name
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.private[0].id
   vpc_security_group_ids = [aws_security_group.backend_sg.id]
@@ -7,11 +8,9 @@
 
   user_data = <<-EOF
               #!/bin/bash
-              yum update -y
-              yum install -y httpd
-              systemctl start httpd
-              systemctl enable httpd
-              echo "<h1>Backend Server</h1>" > /var/www/html/index.html
+              apt-get update -y
+              snap install amazon-ssm-agent --classic
+              systemctl enable --now snap.amazon-ssm-agent.amazon-ssm-agent
               EOF
 
   tags = {
@@ -32,6 +31,15 @@ resource "aws_vpc_security_group_ingress_rule" "backend-sg" {
   cidr_ipv4 = var.vpc_cidr
 
 }
+resource "aws_vpc_security_group_ingress_rule" "backend_sg_ssh" {
+  ip_protocol        = "tcp"
+  from_port          = 22
+  to_port            = 22
+  security_group_id  = aws_security_group.backend_sg.id
+  cidr_ipv4          = "${aws_instance.backend.private_ip}/32"
+}
+
+
 data "aws_ami" "ubuntu" {
   most_recent = true
 
