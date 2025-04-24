@@ -17,4 +17,24 @@ variable "public_subnet_cidrs" {
 
 variable "private_subnet_cidrs" {
   description = "cidr block for private subnet"
+  default = ["10.0.3.0/24", "10.0.4.0/24"]
+  type = list(string)
+}
+
+variable "tags" {
+  description = "a common tag to apply to all resources."
+  type = map(string)
+  default = {
+    "Environment" = "staging"
+    "Name" = "i-One-backend"
+  }
+}
+
+variable "instance_type" {
+  description = "EC2 instance type"
+  default     = "t3.micro"
+}
+
+variable "ami" {
+  default = "ami-0023ec6977f2601fd"
 }
